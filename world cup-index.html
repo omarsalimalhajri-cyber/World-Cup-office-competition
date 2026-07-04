@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WC 2026 — Office Leaderboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B2545;--navy-soft:#13335c;--royal:#1B5FE0;--sky:#5FA8F5;
+  --ice:#EEF4FC;--white:#fff;--gold:#F4B400;--gold-soft:#FFF3CC;
+  --green:#1FA15B;--red:#D64545;--line:#D8E4F6;--dim:#5A7299;
+  --shadow:0 8px 28px rgba(11,37,69,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;color:var(--navy);
+  background:radial-gradient(900px 500px at 100% -5%,rgba(95,168,245,.18),transparent),
+             radial-gradient(700px 400px at -5% 0%,rgba(27,95,224,.10),transparent),
+             var(--ice);
+  min-height:100vh;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:30px 18px 80px;}
+
+/* ── HEADER ── */
+header{display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;padding-bottom:18px;margin-bottom:24px;
+  border-bottom:2px solid var(--line);}
+.eyebrow{font-family:'Oswald',sans-serif;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--royal);margin-bottom:4px;}
+h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(26px,4vw,40px);
+  color:var(--navy);line-height:1.05;}
+h1 span{color:var(--royal);}
+.meta{font-size:13px;color:var(--dim);margin-top:5px;}
+.stage-badge{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:var(--navy);color:#fff;border-radius:999px;padding:8px 18px;white-space:nowrap;}
+
+/* ── SPOTLIGHT ── */
+.spotlight{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-soft) 60%,#0c2c54 100%);
+  border-radius:20px;padding:26px 28px;color:#fff;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;box-shadow:var(--shadow);margin-bottom:26px;
+}
+.spotlight::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;
+  border-radius:50%;background:radial-gradient(circle,rgba(244,180,0,.28),transparent 70%);
+}
+.sp-left{display:flex;align-items:center;gap:16px;z-index:1;}
+.trophy{width:58px;height:58px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(160deg,var(--gold),#c98c00);font-size:28px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 4px rgba(244,180,0,.25);}
+.sp-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold-soft);margin-bottom:2px;}
+.sp-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;}
+.sp-sub{font-size:13px;color:#b9cdf0;margin-top:3px;}
+.sp-right{text-align:right;z-index:1;}
+.sp-pts{font-family:'Oswald',sans-serif;font-size:50px;font-weight:700;
+  line-height:1;color:var(--gold);}
+.sp-lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#b9cdf0;}
+
+/* ── SCORING KEY ── */
+.key{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--dim);
+  margin-bottom:22px;padding:0 2px;}
+.key span{display:flex;align-items:center;gap:6px;}
+.key i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+/* ── LEADERBOARD TABLE ── */
+.board{background:var(--white);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:30px;}
+.board-head{
+  display:grid;grid-template-columns:50px 1fr 88px 160px 28px;
+  gap:10px;padding:12px 20px;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);border-bottom:1px solid var(--line);background:#F7FAFE;
+}
+.row{
+  display:grid;grid-template-columns:50px 1fr 88px 160px 28px;
+  gap:10px;align-items:center;padding:14px 20px;
+  border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s;
+}
+.row:last-child{border-bottom:none;}
+.row:hover{background:#F4F9FF;}
+.row.gold-row{background:linear-gradient(90deg,#fff8e0,transparent 65%);}
+.rank{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--ice);color:var(--navy-soft);
+}
+.rank.r1{background:var(--gold);color:#fff;}
+.rank.r2{background:#c8d6e8;color:var(--navy);}
+.rank.r3{background:#e3c8a3;color:var(--navy);}
+.pname{font-weight:600;font-size:15px;}
+.pchamp{display:block;font-size:11.5px;color:var(--dim);font-weight:500;margin-top:2px;}
+.pts{font-family:'Oswald',sans-serif;font-weight:700;font-size:21px;text-align:right;color:var(--royal);}
+.segbar{display:flex;gap:3px;height:10px;border-radius:6px;overflow:hidden;}
+.seg{flex:1;background:var(--line);border-radius:3px;}
+.s-r32{background:#5FA8F5;}.s-r16{background:#3D86E8;}
+.s-qf{background:#2768C9;}.s-sf{background:#1B4FA0;}
+.s-ru{background:var(--gold);}.s-ch{background:var(--green);}
+.chev{font-size:11px;color:var(--dim);text-align:center;transition:transform .15s;}
+.row.open .chev{transform:rotate(180deg);}
+
+/* ── DETAIL PANEL ── */
+.detail{display:none;padding:6px 20px 20px 86px;border-bottom:1px solid var(--line);background:#FAFCFF;}
+.detail.show{display:block;}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-top:8px;}
+.dc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+.dc-head{font-family:'Oswald',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--dim);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.dc-pts{font-weight:700;color:var(--royal);}
+.dc-body{font-size:12.5px;line-height:1.6;}
+.hit{color:var(--green);font-weight:600;}.miss{color:#aab8cc;}
+
+/* ── ADMIN ── */
+details.admin{background:var(--white);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;}
+details.admin summary{
+  cursor:pointer;list-style:none;padding:16px 22px;
+  font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;color:var(--navy-soft);
+  letter-spacing:.03em;display:flex;align-items:center;gap:10px;
+}
+details.admin summary::-webkit-details-marker{display:none;}
+details.admin summary::before{content:"⚙";font-size:15px;}
+.ab{padding:4px 22px 24px;}
+.anote{font-size:12.5px;color:var(--dim);background:var(--ice);border-radius:10px;
+  padding:12px 16px;margin-bottom:18px;line-height:1.6;}
+.anote strong{color:var(--navy);}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:16px;}
+.field label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--navy-soft);display:flex;justify-content:space-between;align-items:center;}
+.field label small{color:var(--dim);font-weight:500;text-transform:none;letter-spacing:0;font-size:11.5px;}
+textarea,select{
+  width:100%;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;
+  padding:9px 11px;font-family:'Inter',sans-serif;font-size:13px;color:var(--navy);
+  background:#fff;resize:vertical;
+}
+textarea{height:110px;line-height:1.55;}
+textarea:focus,select:focus{outline:none;border-color:var(--royal);}
+.warn{font-size:11.5px;color:var(--red);margin-top:4px;min-height:14px;}
+.btn-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+button.save{
+  font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  font-size:13px;background:var(--royal);color:#fff;border:none;border-radius:10px;
+  padding:11px 24px;cursor:pointer;transition:background .15s;
+}
+button.save:hover{background:#164ec2;}
+.save-msg{font-size:13px;color:var(--green);font-weight:600;}
+.how-to{margin-top:18px;font-size:12px;color:var(--dim);line-height:1.7;}
+.how-to strong{color:var(--navy);}
+.teamlist{font-size:11px;color:var(--dim);margin-top:12px;line-height:1.7;}
+
+footer{text-align:center;font-size:11.5px;color:var(--dim);margin-top:34px;}
+
+@media(max-width:620px){
+  .board-head{display:none;}
+  .row{grid-template-columns:36px 1fr 64px 20px;}
+  .row .segbar{display:none;}
+  .detail{padding-left:18px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <p class="eyebrow">Office World Cup Pool · Canada · Mexico · USA</p>
+    <h1>WC <span>2026</span> Leaderboard</h1>
+    <p class="meta" id="metaLine">21 predictors · R16: 14/16 confirmed · Argentina-Cape Verde & Colombia-Ghana still playing · Updated 4 Jul 2026</p>
+  </div>
+  <div class="stage-badge" id="stageBadge">Round of 32 ✓</div>
+</header>
+
+<div class="spotlight">
+  <div class="sp-left">
+    <div class="trophy">🏆</div>
+    <div>
+      <p class="sp-label">Current Leader</p>
+      <p class="sp-name" id="leaderName">—</p>
+      <p class="sp-sub" id="leaderSub"></p>
+    </div>
+  </div>
+  <div class="sp-right">
+    <div class="sp-pts" id="leaderPts">0</div>
+    <div class="sp-lbl">points</div>
+  </div>
+</div>
+
+<div class="key">
+  <span><i style="background:#5FA8F5"></i>R32 · 5 pts</span>
+  <span><i style="background:#3D86E8"></i>R16 · 10 pts</span>
+  <span><i style="background:#2768C9"></i>QF · 15 pts</span>
+  <span><i style="background:#1B4FA0"></i>SF · 20 pts</span>
+  <span><i style="background:#F4B400"></i>Runner-up · 25 pts</span>
+  <span><i style="background:#1FA15B"></i>Champion · 30 pts</span>
+</div>
+
+<div class="board">
+  <div class="board-head">
+    <span>#</span><span>Predictor</span><span style="text-align:right">Points</span><span>Breakdown</span><span></span>
+  </div>
+  <div id="rows"></div>
+</div>
+
+<details class="admin">
+  <summary>Organizer Panel — update results as the tournament progresses</summary>
+  <div class="ab">
+    <p class="anote">
+      <strong>How this works:</strong> paste in the real qualifying teams after each round, one per line. Hit "Recalculate &amp; download" — you get an updated HTML file. Upload that to Netlify Drop (drag &amp; drop, 10 seconds) and everyone sees the new standings instantly.
+    </p>
+    <div class="admin-grid">
+      <div class="field">
+        <label>Round of 32 <small id="cnt-r32">0 / 32</small></label>
+        <textarea id="in-r32" placeholder="One team per line…"></textarea>
+        <div class="warn" id="warn-r32"></div>
+      </div>
+      <div class="field">
+        <label>Round of 16 <small id="cnt-r16">0 / 16</small></label>
+        <textarea id="in-r16" placeholder="One team per line…"></textarea>
+        <div class="warn" id="warn-r16"></div>
+      </div>
+      <div class="field">
+        <label>Quarterfinals <small id="cnt-qf">0 / 8</small></label>
+        <textarea id="in-qf" placeholder="One team per line…"></textarea>
+        <div class="warn" id="warn-qf"></div>
+      </div>
+      <div class="field">
+        <label>Semifinals <small id="cnt-sf">0 / 4</small></label>
+        <textarea id="in-sf" placeholder="One team per line…"></textarea>
+        <div class="warn" id="warn-sf"></div>
+      </div>
+    </div>
+    <div class="admin-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,240px));">
+      <div class="field">
+        <label>Runner-up (final loser)</label>
+        <select id="in-runnerup"><option value="">— not yet —</option></select>
+      </div>
+      <div class="field">
+        <label>Champion 🏆</label>
+        <select id="in-champion"><option value="">— not yet —</option></select>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="save" id="dlBtn">⬇ Recalculate &amp; download updated file</button>
+      <span class="save-msg" id="dlMsg"></span>
+    </div>
+    <p class="teamlist" id="teamHelp"></p>
+  </div>
+</details>
+
+<footer>WC2026 Office Pool · 21 predictors · Scoring: 5/10/15/20/25/30 pts · Built by Omar</footer>
+</div>
+
+<script>
+const PARTICIPANTS = {"Abdullah Aal Hashim": {"r32": ["South Korea", "Bosnia and Herzegovina", "Brazil", "Sweden", "Germany", "Scotland", "Netherlands", "Morocco", "Ecuador", "Senegal", "France", "Japan", "Mexico", "Ivory Coast", "England", "Jordan", "Belgium", "Czechia", "Türkiye", "Canada", "Spain", "Algeria", "Colombia", "Croatia", "Switzerland", "Egypt", "Paraguay", "Iran", "Portugal", "Ghana"], "r16": ["Germany", "France", "South Korea", "Morocco", "Brazil", "Senegal", "Ivory Coast", "England", "Croatia", "Spain", "Türkiye", "Belgium", "Argentina", "Paraguay", "Switzerland", "Portugal"], "qf": ["France", "Morocco", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Portugal"], "finalists": ["France", "Portugal"], "champion": "Portugal", "runnerUpPick": "France"}, "Abdullah Murad Al Balushi": {"r32": ["Czechia", "Canada", "Morocco", "Netherlands", "Germany", "Paraguay", "Japan", "Brazil", "Ivory Coast", "Senegal", "France", "Sweden", "Mexico", "Ecuador", "Croatia", "Norway", "Belgium", "South Korea", "USA", "Bosnia and Herzegovina", "Spain", "Algeria", "Portugal", "England", "Switzerland", "Austria", "Türkiye", "Egypt", "Colombia", "Ghana"], "r16": ["Germany", "France", "Czechia", "Brazil", "Morocco", "Senegal", "Mexico", "Croatia", "England", "Spain", "USA", "South Korea", "Argentina", "Türkiye", "Switzerland", "Ghana"], "qf": ["France", "Brazil", "Morocco", "Croatia", "Spain", "South Korea", "Argentina", "Switzerland"], "sf": ["France", "Morocco", "Spain", "Argentina"], "finalists": ["France", "Spain"], "champion": "Spain", "runnerUpPick": "France"}, "Al Ahnaf Al Zubaidi": {"r32": ["South Korea", "Canada", "Brazil", "Netherlands", "Germany", "Paraguay", "Japan", "Morocco", "Ivory Coast", "France", "Senegal", "Sweden", "Mexico", "Scotland", "England", "Uzbekistan", "Belgium", "South Africa", "USA", "Ecuador", "Spain", "Algeria", "Portugal", "Ghana", "Switzerland", "Austria", "Türkiye", "Iran", "Colombia", "Croatia"], "r16": ["Germany", "Senegal", "South Korea", "Morocco", "Brazil", "France", "Mexico", "England", "Portugal", "Spain", "USA", "Belgium", "Argentina", "Türkiye", "Switzerland", "Colombia"], "qf": ["Germany", "Morocco", "Brazil", "England", "Spain", "USA", "Argentina", "Switzerland"], "sf": ["Germany", "Brazil", "Spain", "Argentina"], "finalists": ["Brazil", "Spain"], "champion": "Brazil", "runnerUpPick": "Spain"}, "Al Harith Al Shidi": {"r32": ["Czechia", "Bosnia and Herzegovina", "Brazil", "Netherlands", "Germany", "Paraguay", "Sweden", "Morocco", "Ivory Coast", "Senegal", "France", "Japan", "Mexico", "Ecuador", "Ghana", "Uzbekistan", "Belgium", "Saudi Arabia", "Türkiye", "Austria", "Spain", "Algeria", "DR Congo", "England", "Switzerland", "Iran", "USA", "Egypt", "Portugal", "Croatia"], "r16": ["Germany", "France", "Czechia", "Morocco", "Brazil", "Senegal", "Mexico", "Uzbekistan", "England", "Spain", "Türkiye", "Belgium", "Argentina", "USA", "Switzerland", "Portugal"], "qf": ["France", "Morocco", "Brazil", "Mexico", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Argentina"], "finalists": ["France", "Spain"], "champion": "Spain", "runnerUpPick": "France"}, "Al Waleed Al Busaidi": {"r32": ["Mexico", "Bosnia and Herzegovina", "Brazil", "Netherlands", "Germany", "Czechia", "Japan", "Morocco", "Ecuador", "Norway", "France", "Scotland", "South Korea", "Ivory Coast", "Croatia", "Uzbekistan", "Belgium", "Senegal", "Türkiye", "Canada", "Spain", "Austria", "Colombia", "England", "Switzerland", "Algeria", "USA", "Iran", "Portugal", "Ghana"], "r16": ["Germany", "France", "Mexico", "Japan", "Brazil", "Norway", "South Korea", "Croatia", "England", "Spain", "Türkiye", "Belgium", "Argentina", "Iran", "Switzerland", "Portugal"], "qf": ["France", "Japan", "Brazil", "Croatia", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Portugal"], "finalists": ["Brazil", "Spain"], "champion": "Brazil", "runnerUpPick": "Spain"}, "Bakr": {"r32": ["South Korea", "Bosnia and Herzegovina", "Brazil", "Tunisia", "Germany", "Türkiye", "Netherlands", "Morocco", "Ivory Coast", "Norway", "France", "Saudi Arabia", "Czechia", "Ecuador", "England", "Senegal", "Egypt", "Mexico", "USA", "Canada", "Spain", "Algeria", "Colombia", "Croatia", "Switzerland", "Austria", "Paraguay", "Belgium", "Portugal", "Ghana"], "r16": ["Germany", "France", "South Korea", "Netherlands", "Brazil", "Norway", "Ecuador", "England", "Croatia", "Spain", "USA", "Egypt", "Argentina", "Paraguay", "Switzerland", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "USA", "Argentina", "Portugal"], "sf": ["Netherlands", "England", "Spain", "Portugal"], "finalists": ["Netherlands", "Spain"], "champion": "Netherlands", "runnerUpPick": "Spain"}, "Basim Almamari": {"r32": ["South Africa", "Canada", "Brazil", "Japan", "Germany", "Scotland", "Netherlands", "Morocco", "Ivory Coast", "Senegal", "France", "Sweden", "South Korea", "Ecuador", "England", "Algeria", "Belgium", "Mexico", "USA", "Qatar", "Spain", "Austria", "Colombia", "Ghana", "Switzerland", "Egypt", "Paraguay", "Iran", "Portugal", "Norway"], "r16": ["Germany", "France", "South Africa", "Netherlands", "Brazil", "Senegal", "South Korea", "England", "Colombia", "Spain", "USA", "Belgium", "Argentina", "Iran", "Switzerland", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "USA", "Argentina", "Portugal"], "sf": ["France", "England", "Spain", "Portugal"], "finalists": ["France", "Spain"], "champion": "Spain", "runnerUpPick": "France"}, "Carlos Abel Ulloa": {"r32": ["Czechia", "Canada", "Brazil", "Japan", "Germany", "Scotland", "Netherlands", "Morocco", "Ivory Coast", "Senegal", "France", "Sweden", "Mexico", "Ecuador", "England", "Norway", "Belgium", "Saudi Arabia", "USA", "Bosnia and Herzegovina", "Spain", "Austria", "Colombia", "Croatia", "Switzerland", "Algeria", "Türkiye", "Egypt", "Portugal", "Ghana"], "r16": ["Germany", "France", "Canada", "Netherlands", "Brazil", "Senegal", "Mexico", "England", "Croatia", "Spain", "USA", "Belgium", "Argentina", "Egypt", "Switzerland", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Argentina"], "finalists": ["Brazil", "Argentina"], "champion": "Argentina", "runnerUpPick": "Brazil"}, "Haitham Al Hasni": {"r32": ["Czechia", "Canada", "Brazil", "Japan", "Germany", "USA", "Sweden", "Morocco", "Ivory Coast", "Norway", "France", "Netherlands", "Mexico", "Scotland", "England", "Senegal", "Belgium", "South Korea", "Türkiye", "Bosnia and Herzegovina", "Spain", "Algeria", "Colombia", "Ghana", "Switzerland", "Ecuador", "Paraguay", "Egypt", "Portugal", "Croatia"], "r16": ["Germany", "France", "Czechia", "Morocco", "Brazil", "Norway", "Mexico", "England", "Ghana", "Spain", "Türkiye", "Belgium", "Argentina", "Paraguay", "Switzerland", "Portugal"], "qf": ["France", "Morocco", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Portugal"], "finalists": ["France", "Portugal"], "champion": "France", "runnerUpPick": "Portugal"}, "Hani Al Lawati": {"r32": ["Czechia", "Canada", "Morocco", "Tunisia", "Germany", "Paraguay", "Sweden", "Brazil", "Ecuador", "Norway", "France", "Japan", "South Korea", "Scotland", "Croatia", "Senegal", "Belgium", "Mexico", "USA", "Qatar", "Spain", "Algeria", "Colombia", "Ghana", "Switzerland", "Egypt", "Türkiye", "Iran", "Portugal", "England"], "r16": ["Paraguay", "France", "Canada", "Brazil", "Morocco", "Ecuador", "Scotland", "Croatia", "Colombia", "Spain", "USA", "Belgium", "Argentina", "Türkiye", "Egypt", "Portugal"], "qf": ["France", "Brazil", "Morocco", "Croatia", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["Brazil", "Croatia", "Spain", "Portugal"], "finalists": ["Brazil", "Portugal"], "champion": "Portugal", "runnerUpPick": "Brazil"}, "Keir Melvin": {"r32": ["South Korea", "Switzerland", "Brazil", "Sweden", "Germany", "Scotland", "Netherlands", "Morocco", "Ivory Coast", "Norway", "France", "Paraguay", "Mexico", "Ecuador", "England", "Senegal", "Egypt", "Czechia", "Türkiye", "Canada", "Spain", "Austria", "Colombia", "Ghana", "Bosnia and Herzegovina", "Algeria", "USA", "Belgium", "Portugal", "Croatia"], "r16": ["Germany", "France", "South Korea", "Netherlands", "Brazil", "Norway", "Mexico", "England", "Colombia", "Spain", "Türkiye", "Egypt", "Argentina", "Belgium", "Bosnia and Herzegovina", "Portugal"], "qf": ["Germany", "Netherlands", "Brazil", "England", "Spain", "Türkiye", "Argentina", "Portugal"], "sf": ["Germany", "Brazil", "Spain", "Portugal"], "finalists": ["Germany", "Spain"], "champion": "Spain", "runnerUpPick": "Germany"}, "Mohamed Al Maskary": {"r32": ["South Korea", "Canada", "Scotland", "Sweden", "Germany", "Paraguay", "Netherlands", "Brazil", "Ivory Coast", "Iraq", "France", "Tunisia", "Mexico", "Morocco", "England", "Uzbekistan", "Belgium", "Czechia", "Türkiye", "Norway", "Spain", "Jordan", "DR Congo", "Croatia", "Switzerland", "Egypt", "USA", "Iran", "Portugal", "Ghana"], "r16": ["Winner M74", "Winner M77", "Winner M73", "Winner M75", "Winner M76", "Winner M78", "Winner M79", "Winner M80", "Winner M83", "Winner M84", "Winner M81", "Winner M82", "Winner M86", "Winner M88", "Winner M85", "Winner M87"], "qf": ["Winner M89", "Winner M90", "Winner M91", "Winner M92", "Winner M93", "Winner M94", "Winner M95", "Winner M96"], "sf": ["Winner M97", "Winner M98", "Winner M99", "Winner M100"], "finalists": ["Winner M101", "Winner M102"], "champion": null, "runnerUpPick": "Winner M101"}, "Mohammed Al Masroori": {"r32": ["South Korea", "Bosnia and Herzegovina", "Brazil", "Japan", "Germany", "Türkiye", "Netherlands", "Morocco", "Ecuador", "Senegal", "France", "Sweden", "Mexico", "Scotland", "England", "Ivory Coast", "Belgium", "Czechia", "USA", "Canada", "Spain", "Austria", "Colombia", "Croatia", "Switzerland", "Egypt", "Australia", "Iran", "Portugal", "Ghana"], "r16": ["Germany", "France", "Bosnia and Herzegovina", "Netherlands", "Brazil", "Senegal", "Mexico", "England", "Croatia", "Spain", "USA", "Belgium", "Argentina", "Iran", "Switzerland", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Belgium", "Argentina"], "finalists": ["Brazil", "Argentina"], "champion": "Brazil", "runnerUpPick": "Argentina"}, "Muayad Al Araimi": {"r32": ["Czechia", "Canada", "Brazil", "Sweden", "Germany", "Australia", "Netherlands", "Scotland", "Ivory Coast", "Senegal", "France", "Japan", "Mexico", "Morocco", "England", "Norway", "Egypt", "South Korea", "Türkiye", "Algeria", "Spain", "Jordan", "Colombia", "Croatia", "Switzerland", "New Zealand", "USA", "Belgium", "Portugal", "Ecuador"], "r16": ["Germany", "France", "Czechia", "Netherlands", "Brazil", "Ivory Coast", "Morocco", "England", "Croatia", "Spain", "Algeria", "Egypt", "Argentina", "Belgium", "Switzerland", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "Egypt", "Argentina", "Portugal"], "sf": ["France", "England", "Spain", "Portugal"], "finalists": ["France", "Portugal"], "champion": "Portugal", "runnerUpPick": "France"}, "Nouf Al Abri": {"r32": ["Mexico", "Switzerland", "Brazil", "Sweden", "Germany", "Paraguay", "Netherlands", "Morocco", "Ecuador", "Norway", "France", "Japan", "Czechia", "Ivory Coast", "England", "Senegal", "Belgium", "South Korea", "Türkiye", "Bosnia and Herzegovina", "Spain", "Algeria", "Colombia", "Croatia", "Canada", "Austria", "USA", "Egypt", "Portugal", "Ghana"], "r16": ["Germany", "France", "Switzerland", "Netherlands", "Brazil", "Norway", "Czechia", "England", "Croatia", "Spain", "Türkiye", "Belgium", "Argentina", "Egypt", "Austria", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "England", "Spain", "Portugal"], "finalists": ["England", "Portugal"], "champion": "Portugal", "runnerUpPick": "England"}, "Mohammed Almaktoumi": {"r32": ["Mexico", "Canada", "Brazil", "Netherlands", "Germany", "Scotland", "Japan", "Morocco", "Ivory Coast", "Senegal", "France", "Türkiye", "South Korea", "Ecuador", "England", "Iraq", "Belgium", "Czechia", "USA", "Bosnia and Herzegovina", "Spain", "Algeria", "Colombia", "Ghana", "Switzerland", "Jordan", "Australia", "Iran", "Portugal", "Croatia"], "r16": ["Germany", "France", "Mexico", "Morocco", "Brazil", "Senegal", "South Korea", "England", "Ghana", "Spain", "USA", "Belgium", "Argentina", "Australia", "Jordan", "Portugal"], "qf": ["France", "Morocco", "Brazil", "England", "Spain", "USA", "Argentina", "Portugal"], "sf": ["France", "Brazil", "Spain", "Portugal"], "finalists": ["Brazil", "Spain"], "champion": "Brazil", "runnerUpPick": "Spain"}, "Tahra Al Rawahi": {"r32": ["South Korea", "Switzerland", "Brazil", "Netherlands", "Germany", "Scotland", "Japan", "Morocco", "Ivory Coast", "Norway", "France", "Sweden", "Mexico", "Ecuador", "England", "DR Congo", "Belgium", "Austria", "USA", "Canada", "Spain", "Algeria", "Colombia", "Croatia", "Bosnia and Herzegovina", "Iran", "Australia", "Egypt", "Portugal", "Senegal"], "r16": ["Germany", "France", "South Korea", "Morocco", "Brazil", "Norway", "Mexico", "England", "Croatia", "Spain", "USA", "Belgium", "Argentina", "Australia", "Bosnia and Herzegovina", "Portugal"], "qf": ["France", "Morocco", "Brazil", "England", "Spain", "Belgium", "Argentina", "Portugal"], "sf": ["France", "England", "Spain", "Argentina"], "finalists": ["France", "Argentina"], "champion": "Argentina", "runnerUpPick": "France"}, "Patrick nixon": {"r32": ["Mexico", "Bosnia and Herzegovina", "Brazil", "Japan", "Germany", "Scotland", "Netherlands", "Morocco", "Ecuador", "France", "Norway", "Uruguay", "Czechia", "Ivory Coast", "England", "Uzbekistan", "Egypt", "South Korea", "Paraguay", "Canada", "Spain", "Algeria", "Colombia", "Croatia", "Switzerland", "Iran", "Türkiye", "Belgium", "Portugal", "Senegal"], "r16": ["Germany", "Norway", "Bosnia and Herzegovina", "Netherlands", "Brazil", "France", "Czechia", "England", "Colombia", "Spain", "Paraguay", "Egypt", "Argentina", "Belgium", "Switzerland", "Portugal"], "qf": ["Germany", "Netherlands", "Brazil", "England", "Spain", "Paraguay", "Argentina", "Portugal"], "sf": ["Netherlands", "Brazil", "Spain", "Argentina"], "finalists": ["Brazil", "Spain"], "champion": "Brazil", "runnerUpPick": "Spain"}, "Suhail Memon": {"r32": ["South Korea", "Qatar", "Brazil", "Sweden", "Germany", "Australia", "Japan", "Morocco", "Ivory Coast", "Norway", "France", "Netherlands", "Mexico", "Scotland", "Croatia", "Uzbekistan", "Belgium", "Uruguay", "Türkiye", "Switzerland", "Spain", "Jordan", "Colombia", "Ghana", "Canada", "Curaçao", "USA", "Egypt", "Portugal", "Senegal"], "r16": ["Germany", "France", "South Korea", "Morocco", "Brazil", "Norway", "Mexico", "Croatia", "Colombia", "Spain", "Switzerland", "Uruguay", "Argentina", "USA", "Canada", "Portugal"], "qf": ["Germany", "South Korea", "Brazil", "Mexico", "Spain", "Uruguay", "Argentina", "Portugal"], "sf": ["Germany", "Brazil", "Spain", "Argentina"], "finalists": ["Germany", "Argentina"], "champion": "Germany", "runnerUpPick": "Argentina"}, "Suleiman K": {"r32": ["South Africa", "Canada", "Brazil", "Sweden", "Germany", "Morocco", "Netherlands", "Scotland", "Ecuador", "Senegal", "France", "Saudi Arabia", "Mexico", "Ivory Coast", "England", "Colombia", "Belgium", "Norway", "Australia", "Bosnia and Herzegovina", "Spain", "Algeria", "DR Congo", "Croatia", "Switzerland", "New Zealand", "Türkiye", "Iran", "Uzbekistan", "Panama"], "r16": ["Germany", "France", "South Africa", "Netherlands", "Brazil", "Senegal", "Mexico", "England", "Croatia", "Spain", "Australia", "Belgium", "Argentina", "Türkiye", "Switzerland", "Panama"], "qf": ["Germany", "Netherlands", "Brazil", "England", "Spain", "Belgium", "Argentina", "Switzerland"], "sf": ["Germany", "Brazil", "Spain", "Argentina"], "finalists": ["Germany", "Spain"], "champion": "Spain", "runnerUpPick": "Germany"}, "Zayid Khalifa": {"r32": ["Mexico", "Switzerland", "Brazil", "Japan", "Germany", "Netherlands", "Morocco", "Ecuador", "Norway", "France", "South Korea", "England", "Belgium", "Paraguay", "Spain", "Algeria", "Colombia", "Croatia", "Canada", "Türkiye", "Egypt", "Portugal", "USA", "Ivory Coast", "Senegal", "Austria", "Ghana"], "r16": ["Germany", "France", "Mexico", "Netherlands", "Brazil", "Ecuador", "South Korea", "England", "Croatia", "Spain", "Paraguay", "Belgium", "Argentina", "Türkiye", "Canada", "Portugal"], "qf": ["France", "Netherlands", "Brazil", "England", "Spain", "Paraguay", "Argentina", "Portugal"], "sf": ["Netherlands", "England", "Spain", "Portugal"], "finalists": ["Netherlands", "Spain"], "champion": "Netherlands", "runnerUpPick": "Spain"}};
+const ALL_TEAMS = ["Algeria","Argentina","Australia","Austria","Belgium","Bosnia and Herzegovina","Brazil","Canada","Cape Verde","Colombia","Croatia","Curaçao","Czechia","DR Congo","Ecuador","Egypt","England","France","Germany","Ghana","Haiti","Iran","Iraq","Ivory Coast","Japan","Jordan","Mexico","Morocco","Netherlands","New Zealand","Norway","Panama","Paraguay","Portugal","Qatar","Saudi Arabia","Scotland","Senegal","South Africa","South Korea","Spain","Sweden","Switzerland","Tunisia","Türkiye","USA","Uruguay","Uzbekistan"];
+
+let ACTUAL = {"r32": ["South Africa", "Canada", "Brazil", "Japan", "Germany", "Paraguay", "Netherlands", "Morocco", "Ivory Coast", "Norway", "France", "Sweden", "Mexico", "Ecuador", "England", "DR Congo", "Belgium", "Senegal", "USA", "Bosnia and Herzegovina", "Spain", "Austria", "Argentina", "Cape Verde", "Portugal", "Croatia", "Colombia", "Ghana", "Switzerland", "Algeria", "Australia", "Egypt"], "r16": ["Canada", "Brazil", "Paraguay", "Morocco", "Norway", "France", "Mexico", "England", "Belgium", "USA", "Spain", "Portugal", "Switzerland", "Egypt", "Argentina", "Colombia"], "qf": [], "sf": [], "runnerUp": "", "champion": "", "updatedAt": "2026-07-04"};
+
+function scoreP(p){
+  const r32h = p.r32.filter(t=>ACTUAL.r32.includes(t));
+  const r16h = p.r16.filter(t=>ACTUAL.r16.includes(t));
+  const qfh  = p.qf.filter(t=>ACTUAL.qf.includes(t));
+  const sfh  = p.sf.filter(t=>ACTUAL.sf.includes(t));
+  const ruh  = p.runnerUpPick && ACTUAL.runnerUp && p.runnerUpPick===ACTUAL.runnerUp;
+  const chh  = p.champion && ACTUAL.champion && p.champion===ACTUAL.champion;
+  const pts  = r32h.length*5+r16h.length*10+qfh.length*15+sfh.length*20+(ruh?25:0)+(chh?30:0);
+  return {pts,r32h,r16h,qfh,sfh,ruh,chh};
+}
+
+function stage(){
+  if(ACTUAL.champion) return "Champion Crowned 🏆";
+  if(ACTUAL.runnerUp) return "Final Complete";
+  if(ACTUAL.sf.length) return "Semifinals Done";
+  if(ACTUAL.qf.length) return "Quarterfinals Done";
+  if(ACTUAL.r16.length) return "Round of 16 Done";
+  if(ACTUAL.r32.length) return "Round of 32 ✓";
+  return "Group Stage";
+}
+
+function picklist(picks, actual){
+  if(!picks.length) return '<span class="miss">—</span>';
+  return picks.map(t=>{
+    const h=actual.includes(t);
+    return `<span class="${h?'hit':'miss'}">${h?'✓':'·'} ${t}</span>`;
+  }).join('<br>');
+}
+
+function render(){
+  document.getElementById('stageBadge').textContent = stage();
+  const scored = Object.entries(PARTICIPANTS).map(([name,p])=>{
+    const s=scoreP(p); return {name,p,s};
+  });
+  scored.sort((a,b)=>b.s.pts-a.s.pts);
+  let rank=0,prev=null;
+  scored.forEach((r,i)=>{if(r.s.pts!==prev){rank=i+1;prev=r.s.pts;}r.rank=rank;});
+
+  const ldr=scored[0];
+  document.getElementById('leaderName').textContent=ldr?ldr.name:'—';
+  document.getElementById('leaderPts').textContent=ldr?ldr.s.pts:0;
+  document.getElementById('leaderSub').textContent=ldr&&ldr.p.champion?`Picked ${ldr.p.champion} to win it all`:'';
+
+  const segCls=['s-r32','s-r16','s-qf','s-sf','s-ru','s-ch'];
+  const rowsEl=document.getElementById('rows');
+  rowsEl.innerHTML='';
+  scored.forEach(row=>{
+    const rEl=document.createElement('div');
+    rEl.className='row'+(row.rank===1?' gold-row':'');
+    const filled=[row.s.r32h.length>0,row.s.r16h.length>0,row.s.qfh.length>0,
+                  row.s.sfh.length>0,row.s.ruh,row.s.chh];
+    const segs=filled.map((f,i)=>`<div class="seg ${f?segCls[i]:''}"</div>`).join('');
+    rEl.innerHTML=`
+      <div class="rank ${row.rank===1?'r1':row.rank===2?'r2':row.rank===3?'r3':''}">${row.rank}</div>
+      <div class="pname">${row.name}<span class="pchamp">🏆 picks ${row.p.champion||'—'}</span></div>
+      <div class="pts">${row.s.pts}</div>
+      <div class="segbar">${segs}</div>
+      <div class="chev">▾</div>`;
+    const dEl=document.createElement('div');
+    dEl.className='detail';
+    dEl.innerHTML=`<div class="detail-grid">
+      <div class="dc"><div class="dc-head">Round of 32<span class="dc-pts">${row.s.r32h.length*5}pt</span></div><div class="dc-body">${picklist(row.p.r32,ACTUAL.r32)}</div></div>
+      <div class="dc"><div class="dc-head">Round of 16<span class="dc-pts">${row.s.r16h.length*10}pt</span></div><div class="dc-body">${picklist(row.p.r16,ACTUAL.r16)}</div></div>
+      <div class="dc"><div class="dc-head">Quarterfinals<span class="dc-pts">${row.s.qfh.length*15}pt</span></div><div class="dc-body">${picklist(row.p.qf,ACTUAL.qf)}</div></div>
+      <div class="dc"><div class="dc-head">Semifinals<span class="dc-pts">${row.s.sfh.length*20}pt</span></div><div class="dc-body">${picklist(row.p.sf,ACTUAL.sf)}</div></div>
+      <div class="dc"><div class="dc-head">Runner-up<span class="dc-pts">${row.s.ruh?25:0}pt</span></div><div class="dc-body"><span class="${row.s.ruh?'hit':'miss'}">${row.s.ruh?'✓':'·'} ${row.p.runnerUpPick||'—'}</span></div></div>
+      <div class="dc"><div class="dc-head">Champion<span class="dc-pts">${row.s.chh?30:0}pt</span></div><div class="dc-body"><span class="${row.s.chh?'hit':'miss'}">${row.s.chh?'✓':'·'} ${row.p.champion||'—'}</span></div></div>
+    </div>`;
+    rEl.addEventListener('click',()=>{rEl.classList.toggle('open');dEl.classList.toggle('show');});
+    rowsEl.appendChild(rEl);
+    rowsEl.appendChild(dEl);
+  });
+}
+
+// ── ADMIN ──
+function setupAdmin(){
+  ['in-runnerup','in-champion'].forEach(id=>{
+    const sel=document.getElementById(id);
+    ALL_TEAMS.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});
+  });
+  document.getElementById('in-r32').value=ACTUAL.r32.join('\n');
+  document.getElementById('in-r16').value=ACTUAL.r16.join('\n');
+  document.getElementById('in-qf').value=ACTUAL.qf.join('\n');
+  document.getElementById('in-sf').value=ACTUAL.sf.join('\n');
+  document.getElementById('in-runnerup').value=ACTUAL.runnerUp||'';
+  document.getElementById('in-champion').value=ACTUAL.champion||'';
+  document.getElementById('teamHelp').textContent='All 48 teams: '+ALL_TEAMS.join(', ');
+
+  const caps={r32:32,r16:16,qf:8,sf:4};
+  function parseBox(id){
+    const lines=document.getElementById('in-'+id).value.split('\n').map(s=>s.trim()).filter(Boolean);
+    const valid=lines.filter(t=>ALL_TEAMS.includes(t));
+    const bad=lines.filter(t=>!ALL_TEAMS.includes(t));
+    document.getElementById('cnt-'+id).textContent=valid.length+' / '+caps[id];
+    document.getElementById('warn-'+id).textContent=bad.length?'Not recognized: '+bad.join(', '):'';
+    return valid;
+  }
+  ['r32','r16','qf','sf'].forEach(id=>{
+    document.getElementById('in-'+id).addEventListener('input',()=>parseBox(id));
+    parseBox(id);
+  });
+
+  document.getElementById('dlBtn').addEventListener('click',()=>{
+    ACTUAL.r32=parseBox('r32');
+    ACTUAL.r16=parseBox('r16');
+    ACTUAL.qf=parseBox('qf');
+    ACTUAL.sf=parseBox('sf');
+    ACTUAL.runnerUp=document.getElementById('in-runnerup').value;
+    ACTUAL.champion=document.getElementById('in-champion').value;
+    ACTUAL.updatedAt=new Date().toISOString().slice(0,10);
+    render();
+    // Rebuild and download updated HTML
+    const src=document.documentElement.outerHTML;
+    const newSrc=src.replace(/let ACTUAL = \{[\s\S]*?\};/,
+      'let ACTUAL = '+JSON.stringify(ACTUAL)+';');
+    const blob=new Blob([newSrc],{type:'text/html'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='WC26-Office-Leaderboard.html';
+    a.click();
+    document.getElementById('dlMsg').textContent='✓ File downloaded — upload to Netlify to publish!';
+    setTimeout(()=>document.getElementById('dlMsg').textContent='',5000);
+  });
+}
+
+render();
+setupAdmin();
+</script>
+</body>
+</html>
